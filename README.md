@@ -48,7 +48,7 @@ Libp2p định nghĩa một pubsub interface để có thể gửi message đế
 # Code node Libp2p 
 
 ##### Tạo 1 node với các cài đặt cơ bản.
-
+```go
 >   package main
 >
 >   import (
@@ -74,69 +74,72 @@ Libp2p định nghĩa một pubsub interface để có thể gửi message đế
 >		    panic(err)
 >	    }
 >   }
-
+```
 ##### Tạo 1 node với các cài đặt khác
-###### Tạo 1 keypair 
->priv, _, err := crypto.GenerateKeyPair(
->
->		crypto.Ed25519, // Chọn kiểu mã khóa. VD: Ed25519
->
->		-1,             // Chọn độ dài của key. VD: RSA .
->	)
->	if err != nil {
->
->		panic(err)
->	}
-###### Cau hinh 1 node
->h2, err := libp2p.New(
->
->		// Sử dụng keypair vừa tạo 
->		libp2p.Identity(priv),
->
->		// Multiple listen addresses
->		libp2p.ListenAddrStrings(
->			"/ip4/0.0.0.0/tcp/9000",      // kết nối tcp thông thường
->			"/ip4/0.0.0.0/udp/9000/quic", // UDP endpoint cho QUIC transport
->		),
->
->		// support TLS connections
->		libp2p.Security(libp2ptls.ID, libp2ptls.New),
->
->		// support noise connections
->		libp2p.Security(noise.ID, noise.New),
->
->		// support any other default transports (TCP)
->		libp2p.DefaultTransports,
->
->		// Giới hạn số kết nói tới node 
->       // Khi số kết nối vượt quá high, một số kết nối sẽ bị buộc chấm dứt
->          cho tới khi đạt mức low
->
->		libp2p.ConnectionManager(connmgr.NewConnManager(
->			100,         // Lowwater
->			400,         // HighWater,
->			time.Minute, // GracePeriod
->		)),
->
->		// mở các cổng bằng uPNP cho các máy chủ NAT.
->		libp2p.NATPortMap(),
->		// Sử dụng DHT để tìm các node khác 
->		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
->			idht, err = dht.New(ctx, h)
->			return idht, err
->		}),
->
->		// host use relays and advertise itself on relays if
->		// it finds it is behind NAT.
->		libp2p.EnableAutoRelay(),
->		// launch the server-side of AutoNAT to help other peers to figure 
->       //out if they are behind NATs.
->		// This service is highly rate-limited and should not cause any
->		// performance issues.
->		libp2p.EnableNATService(),
->	)
+###### Tạo 1 keypair
+``` go
+priv, _, err := crypto.GenerateKeyPair(
 
+  crypto.Ed25519, // Chọn kiểu mã khóa. VD: Ed25519
+
+  -1,             // Chọn độ dài của key. VD: RSA .
+) if err != nil {
+
+  panic(err)
+}
+```
+###### Cau hinh 1 node
+``` go
+h2, err := libp2p.New(
+
+  // Sử dụng keypair vừa tạo 
+  libp2p.Identity(priv),
+
+  // Multiple listen addresses
+  libp2p.ListenAddrStrings(
+  	"/ip4/0.0.0.0/tcp/9000",      // kết nối tcp thông thường
+  	"/ip4/0.0.0.0/udp/9000/quic", // UDP endpoint cho QUIC transport
+  ),
+
+  // support TLS connections
+  libp2p.Security(libp2ptls.ID, libp2ptls.New),
+
+  // support noise connections
+  libp2p.Security(noise.ID, noise.New),
+
+  // support any other default transports (TCP)
+  libp2p.DefaultTransports,
+
+  // Giới hạn số kết nói tới node 
+  // Khi số kết nối vượt quá high, một số kết nối sẽ bị buộc chấm dứt
+     cho tới khi đạt mức low
+
+  libp2p.ConnectionManager(connmgr.NewConnManager(
+  	100,         // Lowwater
+  	400,         // HighWater,
+  	time.Minute, // GracePeriod
+  )),
+
+  // mở các cổng bằng uPNP cho các máy chủ NAT.
+  libp2p.NATPortMap(),
+  // Sử dụng DHT để tìm các node khác 
+  libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+  	idht, err = dht.New(ctx, h)
+  	return idht, err
+  }),
+
+  // host use relays and advertise itself on relays if
+  // it finds it is behind NAT.
+  libp2p.EnableAutoRelay(),
+  // launch the server-side of AutoNAT to help other peers to figure 
+  //out if they are behind NATs.
+  // This service is highly rate-limited and should not cause any
+  // performance issues.
+  libp2p.EnableNATService(),
+)
+```
 ##### Connect 2 nodes
+``` go
 >   package main
 
 >   import (
