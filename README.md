@@ -153,7 +153,8 @@ Libp2p định nghĩa một pubsub interface để có thể gửi message đế
 >   )
 > 
 >   func main() {
->	    // start a libp2p node that listens on a random local TCP port,
+>   
+>	      // start a libp2p node that listens on a random local TCP port,
 > 	    // but without running the built-in ping protocol
 > 	    node, err := libp2p.New(
 > 		    libp2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
